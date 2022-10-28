@@ -1,7 +1,5 @@
 package com.assignment.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
@@ -24,10 +22,10 @@ public class Photo {
     @Column
     Long height;
 
-    @OneToMany(targetEntity = PhotosChangelog.class, cascade = CascadeType.ALL)
-    @JsonIgnore
-    @JoinColumn(name = "photo_id", referencedColumnName = "id")
-    List<PhotosChangelog> photosChangelogs;
+//    @OneToMany(targetEntity = PhotosChangelog.class, cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    @JoinColumn(name = "photo_id", referencedColumnName = "id")
+//    List<PhotosChangelog> photosChangelogs;
     @OneToMany(targetEntity = Tag.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "photo_id", referencedColumnName = "id")
     Set<Tag> tags;

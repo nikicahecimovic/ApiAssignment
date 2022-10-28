@@ -3,18 +3,18 @@ package com.assignment.service;
 import com.assignment.model.Photo;
 import com.assignment.model.PhotosChangelog;
 import com.assignment.model.Tag;
+import com.assignment.model.TagChangelog;
 import com.assignment.repository.ChangelogRepository;
 import com.assignment.repository.PhotosRepository;
 import com.assignment.repository.TagsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-@Component
-public class Service {
+import java.util.*;
+
+@Service
+public class ApiService {
     @Autowired
     private ChangelogRepository changelogRepository;
 
@@ -26,6 +26,14 @@ public class Service {
 
     public List<Photo> getPhotos() {
         return photosRepository.findAll();
+    }
+
+    public List<Photo> getFilteredPhotosWithTags(String tagValue) {
+       return photosRepository.filterPhotosWithTags(tagValue);
+    }
+
+    public List<Photo> getFilteredPhotosWithoutTags(String tagValue) {
+        return photosRepository.filterPhotosWithoutTags(tagValue);
     }
 
     public void addPhoto(Photo photo) {
@@ -42,12 +50,20 @@ public class Service {
         Date date = new Date();
         Photo editedPhoto = photosRepository.findById(id).get();
         PhotosChangelog oldPhoto = new PhotosChangelog();
+        Set<TagChangelog> oldTagList = new HashSet<>();
         oldPhoto.setAuthor(editedPhoto.getAuthor());
         oldPhoto.setName(editedPhoto.getName());
         oldPhoto.setDescription(editedPhoto.getDescription());
         oldPhoto.setHeight(editedPhoto.getHeight());
         oldPhoto.setWidth(editedPhoto.getWidth());
-        oldPhoto.setTags(editedPhoto.getTags());
+        for (Tag tag : editedPhoto.getTags()) {
+            TagChangelog oldTag = new TagChangelog();
+            oldTag.setId(tag.getId());
+            oldTag.setTag(tag.getTag());
+            oldTag.setDateEdited(new Timestamp(date.getTime()));
+            oldTagList.add(oldTag);
+        }
+        oldPhoto.setTags(oldTagList);
         oldPhoto.setDateEdited(new Timestamp(date.getTime()));
 
         editedPhoto.setAuthor(photo.getAuthor());
