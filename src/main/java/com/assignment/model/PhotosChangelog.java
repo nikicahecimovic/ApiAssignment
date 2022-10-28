@@ -23,9 +23,9 @@ public class PhotosChangelog {
     Long width;
     @Column
     Long height;
-    @OneToMany(targetEntity = Tag.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = TagChangelog.class)
     @JoinColumn(name = "photo_id", referencedColumnName = "id")
-    Set<Tag> tags;
+    Set<TagChangelog> tags;
 
     public Long getId() {
         return id;
@@ -83,11 +83,11 @@ public class PhotosChangelog {
         this.height = height;
     }
 
-    public Set<Tag> getTags() {
+    public Set<TagChangelog> getTags() {
         return tags;
     }
 
-    public void setTags(Set<Tag> tags) {
+    public void setTags(Set<TagChangelog> tags) {
         this.tags = tags;
     }
 
