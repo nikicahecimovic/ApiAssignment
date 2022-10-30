@@ -1,38 +1,19 @@
-package com.assignment.model;
+package com.assignment.request;
 
-import javax.persistence.*;
+import com.assignment.model.Tag;
+
 import java.util.List;
 import java.util.Set;
 
-@Entity
-public class Photo {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    @Column
-    String name;
-    @Column
-    String description;
-    @Column
-    String author;
-    @Column
-    String imageUrl;
-    @Column
-    Long width;
-    @Column
-    Long height;
+public class CreatePhotoRequest {
+    private String name;
+    private String description;
+    private String author;
+    private String imageUrl;
+    private Long width;
+    private Long height;
 
-    @OneToMany(targetEntity = Tag.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "photo_id", referencedColumnName = "id")
-    Set<Tag> tags;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private Set<String> tags;
 
     public String getName() {
         return name;
@@ -82,11 +63,11 @@ public class Photo {
         this.height = height;
     }
 
-    public Set<Tag> getTags() {
+    public Set<String> getTags() {
         return tags;
     }
 
-    public void setTags(Set<Tag> tags) {
+    public void setTags(Set<String> tags) {
         this.tags = tags;
     }
 }

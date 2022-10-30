@@ -10,6 +10,11 @@ public class Tag {
     @Column
     String tag;
 
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "photo_id", referencedColumnName = "id")
+//    Photo photo;
+
+
     public Long getId() {
         return id;
     }
@@ -25,5 +30,4 @@ public class Tag {
     public void setTag(String tag) {
         this.tag = tag;
     }
-
 }

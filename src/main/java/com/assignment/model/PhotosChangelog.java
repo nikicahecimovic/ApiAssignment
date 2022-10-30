@@ -2,6 +2,7 @@ package com.assignment.model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -10,7 +11,7 @@ public class PhotosChangelog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     @Column
-    Timestamp dateEdited;
+    LocalDateTime dateEdited = LocalDateTime.now();
     @Column
     String name;
     @Column
@@ -23,9 +24,9 @@ public class PhotosChangelog {
     Long width;
     @Column
     Long height;
-    @OneToMany(targetEntity = TagChangelog.class)
-    @JoinColumn(name = "photo_id", referencedColumnName = "id")
-    Set<TagChangelog> tags;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(columnDefinition = "id")
+    Photo photo;
 
     public Long getId() {
         return id;
@@ -33,6 +34,14 @@ public class PhotosChangelog {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public LocalDateTime getDateEdited() {
+        return dateEdited;
+    }
+
+    public void setDateEdited(LocalDateTime dateEdited) {
+        this.dateEdited = dateEdited;
     }
 
     public String getName() {
@@ -83,19 +92,11 @@ public class PhotosChangelog {
         this.height = height;
     }
 
-    public Set<TagChangelog> getTags() {
-        return tags;
+    public Photo getPhoto() {
+        return photo;
     }
 
-    public void setTags(Set<TagChangelog> tags) {
-        this.tags = tags;
-    }
-
-    public Timestamp getDateEdited() {
-        return dateEdited;
-    }
-
-    public void setDateEdited(Timestamp dateEdited) {
-        this.dateEdited = dateEdited;
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
     }
 }

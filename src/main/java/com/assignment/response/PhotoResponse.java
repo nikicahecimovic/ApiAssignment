@@ -1,30 +1,22 @@
-package com.assignment.model;
+package com.assignment.response;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-@Entity
-public class Photo {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    @Column
-    String name;
-    @Column
-    String description;
-    @Column
-    String author;
-    @Column
-    String imageUrl;
-    @Column
-    Long width;
-    @Column
-    Long height;
+public class PhotoResponse {
+    private Long id;
+    private String name;
+    private String description;
+    private String author;
+    private String imageUrl;
+    private Long width;
+    private Long height;
 
-    @OneToMany(targetEntity = Tag.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "photo_id", referencedColumnName = "id")
-    Set<Tag> tags;
+    private List<TagResponse> tags = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -82,11 +74,11 @@ public class Photo {
         this.height = height;
     }
 
-    public Set<Tag> getTags() {
+    public List<TagResponse> getTags() {
         return tags;
     }
 
-    public void setTags(Set<Tag> tags) {
+    public void setTags(List<TagResponse> tags) {
         this.tags = tags;
     }
 }

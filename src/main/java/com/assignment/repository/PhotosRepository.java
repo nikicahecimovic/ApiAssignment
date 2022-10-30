@@ -15,10 +15,9 @@ public interface PhotosRepository extends JpaRepository<Photo, Long> {
             "WHERE t.tag = :tagValue")
     List<Photo> filterPhotosWithTags(@Param("tagValue") String tagValue);
 
-    @Query("SELECT p " +
-            "FROM Photo p " +
-            "LEFT JOIN p.tags t " +
-            "WHERE t.tag <> :tagValue")
+    @Query(value = "SELECT DISTINCT * " +
+            "FROM photo p " +
+            "LEFT JOIN tag t ON p.id = t.photo_id " +
+            "WHERE t.tag NOT IN (:tagValue)", nativeQuery = true)
     List<Photo> filterPhotosWithoutTags(@Param("tagValue") String tagValue);
-
 }
