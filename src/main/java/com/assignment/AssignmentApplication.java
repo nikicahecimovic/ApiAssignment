@@ -9,9 +9,12 @@ import java.time.LocalDateTime;
 public class AssignmentApplication {
 
 	public static void main(String[] args) {
+		LocalDateTime a = LocalDateTime.now();
 		SpringApplication.run(AssignmentApplication.class, args);
 		System.out.println("Hello world");
-		System.out.println(LocalDateTime.now());
+		LocalDateTime b = LocalDateTime.now();
+		System.out.println(a + " " + b);
+		System.out.println(a.isAfter(b));
 	}
 
 }

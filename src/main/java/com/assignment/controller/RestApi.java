@@ -3,6 +3,7 @@ package com.assignment.controller;
 import com.assignment.model.Photo;
 import com.assignment.model.PhotosChangelog;
 import com.assignment.model.Tag;
+import com.assignment.model.TagsChangelog;
 import com.assignment.request.CreatePhotoRequest;
 import com.assignment.request.UpdatePhotoRequest;
 import com.assignment.response.PhotoResponse;
@@ -11,6 +12,8 @@ import com.assignment.service.ApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,20 +57,50 @@ public class RestApi {
 
     @GetMapping(value = "photo/history/{id}/{time}")
     public PhotoResponse getPhotoHistory(@PathVariable Long id, @PathVariable String time){
-
        PhotosChangelog photo = apiService.getPhotoHistory(id, time);
-
+       List<TagsChangelog> tags = apiService.getTagHistory(id, time);
         PhotoResponse photoResponse = new PhotoResponse();
-        photoResponse.setId(photo.getPhoto().getId());
-        photoResponse.setName(photo.getName());
-        photoResponse.setDescription(photo.getDescription());
-        photoResponse.setAuthor(photo.getAuthor());
-        photoResponse.setImageUrl(photo.getImageUrl());
-        photoResponse.setHeight(photo.getHeight());
-        photoResponse.setWidth(photo.getWidth());
-
+        List<TagResponse> tagResponses = new ArrayList<>();
+        if(photo != null && LocalDateTime.parse(time).isBefore(photo.getDateEdited())) {
+            photoResponse.setId(photo.getPhoto().getId());
+            photoResponse.setName(photo.getName());
+            photoResponse.setDescription(photo.getDescription());
+            photoResponse.setAuthor(photo.getAuthor());
+            photoResponse.setImageUrl(photo.getImageUrl());
+            photoResponse.setHeight(photo.getHeight());
+            photoResponse.setWidth(photo.getWidth());
+            photoResponse.setTags(tags.stream()
+                    .map(tag -> {
+                        TagResponse tagResponse = new TagResponse();
+                        tagResponse.setId(tag.getId());
+                        tagResponse.setValue(tag.getValue());
+                        tagResponses.add(tagResponse);
+                        return tagResponse;
+                            }).collect(Collectors.toList())
+                    );
+        } else {
+            Photo lastPhoto = apiService.getPhotoById(id);
+            photoResponse.setId(lastPhoto.getId());
+            photoResponse.setName(lastPhoto.getName());
+            photoResponse.setDescription(lastPhoto.getDescription());
+            photoResponse.setAuthor(lastPhoto.getAuthor());
+            photoResponse.setImageUrl(lastPhoto.getImageUrl());
+            photoResponse.setHeight(lastPhoto.getHeight());
+            photoResponse.setWidth(lastPhoto.getWidth());
+            photoResponse.setTags(
+                    lastPhoto.getTags().stream()
+                            .map(tag -> {
+                                TagResponse tagResponse = new TagResponse();
+                                tagResponse.setId(tag.getId());
+                                tagResponse.setValue(tag.getValue());
+                                return tagResponse;
+                            })
+                            .collect(Collectors.toList())
+            );
+        }
         return photoResponse;
     }
+
 
     @PostMapping(value = "tag/add")
     public void addTag(@RequestBody Tag tag){

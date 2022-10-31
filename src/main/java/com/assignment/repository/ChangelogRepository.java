@@ -11,6 +11,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ChangelogRepository extends JpaRepository<PhotosChangelog, Long> {
-    @Query("SELECT c FROM PhotosChangelog c WHERE c.dateEdited > :time AND c.photo.id = :photoId")
+    @Query(value = "SELECT * FROM photos.photos_changelog c WHERE c.date_edited > :time AND c.photo_id = :photoId", nativeQuery = true)
     List<PhotosChangelog> getPhotoHistory(@Param("photoId") Long photoId, @Param("time") LocalDateTime ldt, Pageable pageable);
 }

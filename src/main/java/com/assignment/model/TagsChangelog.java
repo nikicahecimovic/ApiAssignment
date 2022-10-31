@@ -50,4 +50,8 @@ public class TagsChangelog {
     public void setPhotoId(Long photoId) {
         this.photoId = photoId;
     }
+
+    public LocalDateTime getDateEdited() {
+        return dateEdited;
+    }
 }

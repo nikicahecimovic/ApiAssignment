@@ -17,7 +17,6 @@ public class Tag {
 //    @JoinColumn(name = "photo_id", referencedColumnName = "id")
 //    Photo photo;
 
-
     public Long getId() {
         return id;
     }

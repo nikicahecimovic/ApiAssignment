@@ -15,6 +15,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,6 +43,10 @@ public class ApiService {
         return photosRepository.findAll();
     }
 
+    public Photo getPhotoById(Long id) {
+        return photosRepository.getReferenceById(id);
+    }
+
     public List<Photo> getFilteredPhotosWithTags(String tagValue) {
        return photosRepository.filterPhotosWithTags(tagValue);
     }
@@ -62,8 +69,6 @@ public class ApiService {
                         .collect(Collectors.toSet()
                         )
         );
-
-
         photosRepository.save(photo);
     }
 
@@ -91,8 +96,7 @@ public class ApiService {
             oldLog.setPhotoId(photo.getId());
             tagsChangelogRepository.save(oldLog);
         }
-
-
+        changelogRepository.save(changelog);
         photo.setAuthor(request.getAuthor());
         photo.setName(request.getName());
         photo.setDescription(request.getDescription());
@@ -116,6 +120,25 @@ public class ApiService {
         } else {
             return null;
         }
+    }
+
+    public List<TagsChangelog> getTagHistory(Long photoId, String time) {
+        LocalDateTime ldt = LocalDateTime.parse(time);
+        List<TagsChangelog> tagList = tagsChangelogRepository.getTagsHistory(photoId, ldt);
+        List<TagsChangelog> close = new ArrayList<>();
+        LocalDateTime temp = null;
+        if (tagList.size() > 0) {
+            temp = tagList.get(0).getDateEdited();
+            ZonedDateTime zdt = temp.atZone(ZoneId.of("Europe/Paris"));
+            for (TagsChangelog changelog : tagList) {
+                long tagTime = changelog.getDateEdited().atZone(ZoneId.of("Europe/Paris")).toEpochSecond();
+                long compareTime = zdt.toEpochSecond();
+                if ((tagTime - compareTime) <= 1) {
+                    close.add(changelog);
+                }
+            }
+        }
+        return close;
     }
 
     private static Tag mapTagFromRequest(String tagRequest, Photo photo) {

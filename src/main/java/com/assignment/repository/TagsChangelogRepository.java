@@ -10,8 +10,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TagsChangelogRepository extends JpaRepository<TagsChangelog, Long> {
-//    @Query("SELECT * FROM TagsChangelog c WHERE c.dateEdited > :time AND c.photo.id = :photoId")
-//    List<TagsChangelog> getTagsHistory(@Param("photoId") Long photoId, @Param("time") LocalDateTime ldt, Pageable pageable);
-
-
+    @Query(value = "SELECT * FROM tags_changelog c WHERE c.date_edited > :time AND c.photo_id = :photoId", nativeQuery = true)
+    List<TagsChangelog> getTagsHistory(@Param("photoId") Long photoId, @Param("time") LocalDateTime ldt);
 }
