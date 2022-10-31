@@ -24,7 +24,7 @@ public class PhotosChangelog {
     Long width;
     @Column
     Long height;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(columnDefinition = "id")
     Photo photo;
 

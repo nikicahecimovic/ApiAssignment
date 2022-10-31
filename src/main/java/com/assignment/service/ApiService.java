@@ -3,14 +3,18 @@ package com.assignment.service;
 import com.assignment.model.Photo;
 import com.assignment.model.PhotosChangelog;
 import com.assignment.model.Tag;
+import com.assignment.model.TagsChangelog;
 import com.assignment.repository.ChangelogRepository;
 import com.assignment.repository.PhotosRepository;
+import com.assignment.repository.TagsChangelogRepository;
 import com.assignment.repository.TagsRepository;
 import com.assignment.request.CreatePhotoRequest;
 import com.assignment.request.UpdatePhotoRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,11 +26,14 @@ public class ApiService {
 
     private final TagsRepository tagsRepository;
 
+    private final TagsChangelogRepository tagsChangelogRepository;
+
     @Autowired
-    public ApiService(ChangelogRepository changelogRepository, PhotosRepository photosRepository, TagsRepository tagsRepository) {
+    public ApiService(ChangelogRepository changelogRepository, PhotosRepository photosRepository, TagsRepository tagsRepository, TagsChangelogRepository tagsChangelogRepository) {
         this.changelogRepository = changelogRepository;
         this.photosRepository = photosRepository;
         this.tagsRepository = tagsRepository;
+        this.tagsChangelogRepository = tagsChangelogRepository;
     }
 
     public List<Photo> getPhotos() {
@@ -48,6 +55,7 @@ public class ApiService {
         photo.setDescription(request.getDescription());
         photo.setHeight(request.getHeight());
         photo.setWidth(request.getWidth());
+        photo.setImageUrl(request.getImageUrl());
         photo.setTags(
                 request.getTags().stream()
                         .map(tag -> mapTagFromRequest(tag, photo))
@@ -64,7 +72,6 @@ public class ApiService {
     }
 
     //TODO ne brisu se editani tagovi nego im se samo makne photo_id??
-
     public void editPhoto(Long id, UpdatePhotoRequest request) {
         Photo photo = photosRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException(String.format("No photo found with ID = %d", id)));
@@ -77,7 +84,14 @@ public class ApiService {
         changelog.setWidth(photo.getWidth());
         changelog.setImageUrl(photo.getImageUrl());
         changelog.setPhoto(photo);
-        changelogRepository.save(changelog);
+        for (Tag tag : photo.getTags()) {
+            TagsChangelog oldLog = new TagsChangelog();
+            oldLog.setValue(tag.getValue());
+            oldLog.setTag(tag);
+            oldLog.setPhotoId(photo.getId());
+            tagsChangelogRepository.save(oldLog);
+        }
+
 
         photo.setAuthor(request.getAuthor());
         photo.setName(request.getName());
@@ -94,9 +108,19 @@ public class ApiService {
         photosRepository.save(photo);
     }
 
+    public PhotosChangelog getPhotoHistory(Long photoId, String time){
+        LocalDateTime ldt = LocalDateTime.parse(time);
+        List<PhotosChangelog> photoList = changelogRepository.getPhotoHistory(photoId, ldt, PageRequest.of(0,1));
+        if (photoList.size()>0){
+            return photoList.get(0);
+        } else {
+            return null;
+        }
+    }
+
     private static Tag mapTagFromRequest(String tagRequest, Photo photo) {
         Tag tag = new Tag();
-        tag.setTag(tagRequest);
+        tag.setValue(tagRequest);
         return tag;
     }
 

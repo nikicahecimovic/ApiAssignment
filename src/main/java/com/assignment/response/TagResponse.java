@@ -2,7 +2,7 @@ package com.assignment.response;
 
 public class TagResponse {
     private Long id;
-    private String tag;
+    private String value;
 
     public Long getId() {
         return id;
@@ -12,11 +12,11 @@ public class TagResponse {
         this.id = id;
     }
 
-    public String getTag() {
-        return tag;
+    public String getValue() {
+        return value;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setValue(String value) {
+        this.value = value;
     }
 }

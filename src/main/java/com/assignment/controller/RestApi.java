@@ -1,6 +1,7 @@
 package com.assignment.controller;
 
 import com.assignment.model.Photo;
+import com.assignment.model.PhotosChangelog;
 import com.assignment.model.Tag;
 import com.assignment.request.CreatePhotoRequest;
 import com.assignment.request.UpdatePhotoRequest;
@@ -51,6 +52,23 @@ public class RestApi {
         apiService.editPhoto(id, request);
     }
 
+    @GetMapping(value = "photo/history/{id}/{time}")
+    public PhotoResponse getPhotoHistory(@PathVariable Long id, @PathVariable String time){
+
+       PhotosChangelog photo = apiService.getPhotoHistory(id, time);
+
+        PhotoResponse photoResponse = new PhotoResponse();
+        photoResponse.setId(photo.getPhoto().getId());
+        photoResponse.setName(photo.getName());
+        photoResponse.setDescription(photo.getDescription());
+        photoResponse.setAuthor(photo.getAuthor());
+        photoResponse.setImageUrl(photo.getImageUrl());
+        photoResponse.setHeight(photo.getHeight());
+        photoResponse.setWidth(photo.getWidth());
+
+        return photoResponse;
+    }
+
     @PostMapping(value = "tag/add")
     public void addTag(@RequestBody Tag tag){
         apiService.addTag(tag);
@@ -73,7 +91,7 @@ public class RestApi {
                                     .map(tag -> {
                                         TagResponse tagResponse = new TagResponse();
                                         tagResponse.setId(tag.getId());
-                                        tagResponse.setTag(tag.getTag());
+                                        tagResponse.setValue(tag.getValue());
                                         return tagResponse;
                                     })
                                     .collect(Collectors.toList())

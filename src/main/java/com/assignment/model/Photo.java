@@ -1,6 +1,7 @@
 package com.assignment.model;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -11,6 +12,8 @@ public class Photo {
     Long id;
     @Column
     String name;
+    @Column
+    LocalDateTime dateEdited = LocalDateTime.now();
     @Column
     String description;
     @Column

@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class Tag {
+public class TagsChangelog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -12,10 +12,11 @@ public class Tag {
     String value;
     @Column
     LocalDateTime dateEdited = LocalDateTime.now();
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(columnDefinition = "id")
+    Tag tag;
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "photo_id", referencedColumnName = "id")
-//    Photo photo;
+    Long photoId;
 
 
     public Long getId() {
@@ -32,5 +33,21 @@ public class Tag {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public Tag getTag() {
+        return tag;
+    }
+
+    public void setTag(Tag tag) {
+        this.tag = tag;
+    }
+
+    public Long getPhotoId() {
+        return photoId;
+    }
+
+    public void setPhotoId(Long photoId) {
+        this.photoId = photoId;
     }
 }
