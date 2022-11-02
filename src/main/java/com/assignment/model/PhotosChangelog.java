@@ -24,7 +24,7 @@ public class PhotosChangelog {
     private Long width;
     @Column
     private Long height;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(columnDefinition = "id")
     private Photo photo;
 

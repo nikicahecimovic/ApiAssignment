@@ -1,6 +1,5 @@
 package com.assignment.repository;
 
-import com.assignment.model.Photo;
 import com.assignment.model.PhotosChangelog;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

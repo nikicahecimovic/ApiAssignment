@@ -12,6 +12,7 @@ import com.assignment.request.CreatePhotoRequest;
 import com.assignment.request.UpdatePhotoRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -48,11 +49,35 @@ public class ApiService {
     }
 
     public List<Photo> getFilteredPhotosWithTags(String tagValue) {
-       return photosRepository.filterPhotosWithTags(tagValue);
+       return photosRepository.filterPhotosWithTags(tagValue, PageRequest.of(0, 10));
     }
 
-    public List<Photo> getFilteredPhotosWithoutTags(String tagValue) {
-        return photosRepository.filterPhotosWithoutTags(tagValue);
+    public Set<Photo> getFilteredPhotosWithoutTags(String tagValue) {
+        List<Photo> photoList = photosRepository.filterPhotosWithoutTags(tagValue, PageRequest.of(0,10));
+        Set<Photo> photoSet = new HashSet<>();
+
+        Long pastId = null;
+        boolean newPhoto = true;
+        int count = 0;
+        int numberOfTags = 0;
+
+        for (Photo photo: photoList) {
+            if (pastId!= null && !pastId.equals(photo.getId())){
+                newPhoto = true;
+            }
+            if (newPhoto) {
+              pastId = photo.getId();
+              count = 0;
+              numberOfTags = photo.getTags().size();
+            }
+            count++;
+            newPhoto = false;
+            if (pastId.equals(photo.getId()) && count==numberOfTags) {
+                photoSet.add(photo);
+                newPhoto = true;
+            }
+        }
+        return photoSet;
     }
 
     public void addPhoto(CreatePhotoRequest request) {
@@ -76,7 +101,6 @@ public class ApiService {
         photosRepository.deleteById(id);
     }
 
-    //TODO ne brisu se editani tagovi nego im se samo makne photo_id??
     public void editPhoto(Long id, UpdatePhotoRequest request) {
         Photo photo = photosRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException(String.format("No photo found with ID = %d", id)));
@@ -125,7 +149,7 @@ public class ApiService {
         LocalDateTime ldt = LocalDateTime.parse(time);
         List<TagsChangelog> tagList = tagsChangelogRepository.getTagsHistory(photoId, ldt);
         List<TagsChangelog> close = new ArrayList<>();
-        LocalDateTime temp = null;
+        LocalDateTime temp;
         if (tagList.size() > 0) {
             temp = tagList.get(0).getDateEdited();
             ZonedDateTime zdt = temp.atZone(ZoneId.of("Europe/Paris"));

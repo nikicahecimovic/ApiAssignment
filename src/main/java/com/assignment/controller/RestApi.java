@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -25,17 +26,17 @@ public class RestApi {
 
     @GetMapping(value = "photo/photos")
     public List<PhotoResponse> getPhotos(){
-        return getResponse(apiService.getPhotos());
+        return getResponseList(apiService.getPhotos());
     }
 
     @GetMapping(value = "photo/filterWithTags/{tagValue}")
     public List<PhotoResponse> filterPhotosWithTags(@PathVariable String tagValue){
-        return getResponse(apiService.getFilteredPhotosWithTags(tagValue));
+        return getResponseList(apiService.getFilteredPhotosWithTags(tagValue));
     }
 
     @GetMapping(value = "photo/filterWithoutTags/{tagValue}")
     public List<PhotoResponse> filterPhotosWithoutTags(@PathVariable String tagValue){
-        return getResponse(apiService.getFilteredPhotosWithoutTags(tagValue));
+        return getResponseSet(apiService.getFilteredPhotosWithoutTags(tagValue));
     }
 
     @PostMapping(value = "photo/add")
@@ -106,7 +107,7 @@ public class RestApi {
         apiService.addTag(tag);
     }
 
-    private List<PhotoResponse> getResponse(List<Photo> photos) {
+    private List<PhotoResponse> getResponseList(List<Photo> photos) {
         return photos.stream()
                 .map(photo -> {
                     PhotoResponse photoResponse = new PhotoResponse();
@@ -127,7 +128,31 @@ public class RestApi {
                                     })
                                     .collect(Collectors.toList())
                     );
+                    return photoResponse;
+                }).collect(Collectors.toList());
+    }
 
+    private List<PhotoResponse> getResponseSet(Set<Photo> photos) {
+        return photos.stream()
+                .map(photo -> {
+                    PhotoResponse photoResponse = new PhotoResponse();
+                    photoResponse.setId(photo.getId());
+                    photoResponse.setName(photo.getName());
+                    photoResponse.setDescription(photo.getDescription());
+                    photoResponse.setAuthor(photo.getAuthor());
+                    photoResponse.setImageUrl(photo.getImageUrl());
+                    photoResponse.setHeight(photo.getHeight());
+                    photoResponse.setWidth(photo.getWidth());
+                    photoResponse.setTags(
+                            photo.getTags().stream()
+                                    .map(tag -> {
+                                        TagResponse tagResponse = new TagResponse();
+                                        tagResponse.setId(tag.getId());
+                                        tagResponse.setValue(tag.getValue());
+                                        return tagResponse;
+                                    })
+                                    .collect(Collectors.toList())
+                    );
                     return photoResponse;
                 }).collect(Collectors.toList());
     }
