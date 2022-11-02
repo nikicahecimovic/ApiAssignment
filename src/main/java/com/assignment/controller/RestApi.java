@@ -101,12 +101,10 @@ public class RestApi {
         return photoResponse;
     }
 
-
     @PostMapping(value = "tag/add")
     public void addTag(@RequestBody Tag tag){
         apiService.addTag(tag);
     }
-
 
     private List<PhotoResponse> getResponse(List<Photo> photos) {
         return photos.stream()

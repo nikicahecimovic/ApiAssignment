@@ -7,15 +7,11 @@ import java.time.LocalDateTime;
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
     @Column
-    String value;
+    private String value;
     @Column
-    LocalDateTime dateEdited = LocalDateTime.now();
-
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "photo_id", referencedColumnName = "id")
-//    Photo photo;
+    private LocalDateTime dateEdited = LocalDateTime.now();
 
     public Long getId() {
         return id;

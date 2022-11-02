@@ -9,25 +9,25 @@ import java.util.Set;
 public class Photo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
     @Column
-    String name;
+    private String name;
     @Column
-    LocalDateTime dateEdited = LocalDateTime.now();
+    private LocalDateTime dateEdited = LocalDateTime.now();
     @Column
-    String description;
+    private String description;
     @Column
-    String author;
+    private String author;
     @Column
-    String imageUrl;
+    private String imageUrl;
     @Column
-    Long width;
+    private Long width;
     @Column
-    Long height;
+    private Long height;
 
     @OneToMany(targetEntity = Tag.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "photo_id", referencedColumnName = "id")
-    Set<Tag> tags;
+    private Set<Tag> tags;
 
     public Long getId() {
         return id;

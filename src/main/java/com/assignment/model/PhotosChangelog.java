@@ -9,24 +9,24 @@ import java.util.Set;
 public class PhotosChangelog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
     @Column
-    LocalDateTime dateEdited = LocalDateTime.now();
+    private LocalDateTime dateEdited = LocalDateTime.now();
     @Column
-    String name;
+    private String name;
     @Column
-    String description;
+    private String description;
     @Column
-    String author;
+    private String author;
     @Column
-    String imageUrl;
+    private String imageUrl;
     @Column
-    Long width;
+    private Long width;
     @Column
-    Long height;
+    private Long height;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(columnDefinition = "id")
-    Photo photo;
+    private Photo photo;
 
     public Long getId() {
         return id;

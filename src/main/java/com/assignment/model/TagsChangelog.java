@@ -7,17 +7,15 @@ import java.time.LocalDateTime;
 public class TagsChangelog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
     @Column
-    String value;
+    private String value;
     @Column
-    LocalDateTime dateEdited = LocalDateTime.now();
+    private LocalDateTime dateEdited = LocalDateTime.now();
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(columnDefinition = "id")
-    Tag tag;
-
-    Long photoId;
-
+    private Tag tag;
+    private Long photoId;
 
     public Long getId() {
         return id;

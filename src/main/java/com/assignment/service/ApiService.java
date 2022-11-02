@@ -103,12 +103,11 @@ public class ApiService {
         photo.setHeight(request.getHeight());
         photo.setWidth(request.getWidth());
         photo.setImageUrl(request.getImageUrl());
-       photo.setTags(
+        photo.setTags(
                request.getTags().stream()
                 .map(tag -> mapTagFromRequest(tag, photo))
                .collect(Collectors.toSet())
        );
-
         photosRepository.save(photo);
     }
 
